@@ -16,6 +16,15 @@ The first condition makes the order a divisor of $p-1$. If its value $d$ were a 
 
 There are 405 odd prime moduli in the range. The largest of their least prime primitive roots is 53, attained only for $p=2791$. Combining the two ranges proves the stated implication. Prior computations already included this finite range. [Oliveira e Silva's primitive-root computations](https://sweet.ua.pt/tos/p_roots.html)
 
+## Two unconditional families with no size cutoff
+
+Fix a prime $p$ and $0<e<p-1$. The group $(\mathbb Z/p\mathbb Z)^\times$ is cyclic of order $p-1$, so it contains an element $a$ with $a^e\ne1$. Take its representative $m$ in $[1,p-1]$. If every prime factor of $m$ had $e$th power one, multiplying those powers would give $a^e=1$. Thus some prime $q\mid m$ satisfies $q<p$ and $q^e\ne1$.
+
+* If $p-1=r^{k+1}$ with $r$ prime, take $e=r^k$. Every proper divisor of $p-1$ divides $e$, so the selected prime has order $p-1$.
+* If $p-1=2r$ with $r$ prime, take $e=r$. A proper order dividing $2r$ divides $r$ or $2$. The former is excluded by construction. In the latter case $q^2=1\bmod p$, which forces $q=1$ or $q=p-1$ as an integer in $[1,p-1]$. The first value is below 2 and the second is the composite $2r$.
+
+Both arguments give the original prime witness for all moduli in their families independently of GRH. [Lean proofs](ElementaryFamilies.lean)
+
 ## Attribution and input
 
 The analytic bound is the 2016 result of McGown, Treviño and Trudgian. Levent Alpöge announced the upstream GRH development with Claude. This repository accepts the indicated Dirichlet theorem as a premise. The submitting account lixiang90 used OpenAI Codex for the downstream write-up, witness checks and Lean code. [Alpöge's announcement](https://alpo.ge/remark.pdf) · [Upstream theorem](https://github.com/CocoSgt/riemann-hypothesis-lean/blob/7cbf7a0c32fca1badf05931879a37c3f8a2b03b4/src/Main.lean#L8)

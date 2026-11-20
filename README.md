@@ -6,6 +6,7 @@ Every odd prime has a smaller **prime** primitive root, assuming Dirichlet GRH. 
 | --- | --- |
 | `finite_range` | Every odd prime through 2791 inclusive has the required witness. Kernel reduction checks the finite certificate. |
 | `two_exception` | No prime smaller than 2 exists. |
+| [`prime_power_predecessor` and `safe_prime_modulus`](ElementaryFamilies.lean) | For every prime with $p-1=r^{k+1}$ or $p-1=2r$ for prime $r$, Lean proves the full prime-witness conclusion without GRH or a size cutoff. |
 | `odd_primes_of_mcgown_trevino_trudgian` | The published square-root bound and the finite certificate give the conclusion for every odd prime. |
 | `erdos_985` | The original odd-prime target follows with two explicit inputs, Dirichlet GRH and the implication from GRH to the published bound. |
 
@@ -19,6 +20,7 @@ From this repository with Elan installed, run the following commands. The toolch
 lake exe cache get
 lake build
 lake env lean PrimePrimitiveRoot.lean
+lake env lean ElementaryFamilies.lean
 python check_small_primes.py
 ```
 
