@@ -25,6 +25,8 @@ Fix a prime $p$ and $0<e<p-1$. The group $(\mathbb Z/p\mathbb Z)^\times$ is cycl
 
 Both arguments give the original prime witness for all moduli in their families independently of GRH. [Lean proofs](ElementaryFamilies.lean)
 
+For safe primes, Ramesh and Makeshwari proved the stronger statement that the least positive primitive root is prime. Joshua Bald published a Lean formalization of this result in October 2026. The short factorization argument above independently checks the existence conclusion used here. [Bald’s paper and source repository](https://zenodo.org/records/23653561)
+
 ## Attribution and input
 
 The analytic bound is the 2016 result of McGown, Treviño and Trudgian. Levent Alpöge announced the upstream GRH development with Claude. This repository accepts the indicated Dirichlet theorem as a premise. The submitting account lixiang90 used OpenAI Codex for the downstream write-up, witness checks and Lean code. [Alpöge's announcement](https://alpo.ge/remark.pdf) · [Upstream theorem](https://github.com/CocoSgt/riemann-hypothesis-lean/blob/7cbf7a0c32fca1badf05931879a37c3f8a2b03b4/src/Main.lean#L8)
