@@ -1,4 +1,5 @@
 import ElementaryFamilies
+import DirichletGRH
 import Mathlib.Data.Nat.Prime.Basic
 import Mathlib.Data.ZMod.Basic
 import Mathlib.GroupTheory.OrderOfElement
@@ -11,11 +12,6 @@ The analytic large-prime estimate is McGown–Treviño–Trudgian, Theorem 1.
 It enters only as an explicit argument of the final assembly lemma. -/
 
 namespace JSP818
-
-/-- Matches the right-of-half-plane statement in Alpöge's Statements.lean. -/
-def DirichletGRH : Prop :=
-  ∀ (N : ℕ) [NeZero N] (χ : DirichletCharacter ℂ N) (s : ℂ),
-    1 / 2 < s.re → (χ ≠ 1 ∨ s ≠ 1) → DirichletCharacter.LFunction χ s ≠ 0
 
 def HasSmallPrimeRoot (p : ℕ) : Prop :=
   ∃ q : ℕ, q.Prime ∧ q < p ∧ orderOf (q : ZMod p) = p - 1
