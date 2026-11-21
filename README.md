@@ -2,16 +2,18 @@
 
 Assuming Dirichlet GRH, every odd prime $p$ has a prime $q<p$ of multiplicative order $p-1$ modulo $p$. The [mathematical proof](PROOF.md) and Lean developments support [awards PR #5615](https://github.com/TheJustinSunPrize/awards/pull/5615).
 
-**The direct Lean theorem `erdos_985_of_grh_and_finite` takes two inputs.** The first is Dirichlet GRH. The second is a finite Boolean check on small prime witnesses. Lean proves the uniform smoothed character estimate from GRH, the sieve implication, its application to every large modulus, and the correctness of each finite certificate. The basic Python verifier enumerates the 111,011 residual prime moduli and finds a witness at most 193 for each in about four seconds. [Direct theorem](ExplicitTwist.lean) · [Definition of the finite input](FiniteReduction.lean) · [Witness checker](FiniteWitness.lean)
+**The main theorem `JSP818.erdos_985_of_grh` takes Dirichlet GRH as its only mathematical premise.** Its conclusion gives a prime primitive root strictly below every odd prime modulus. Lean proves the character estimate, the sieve implication, and the universally quantified finite calculation `JSP818.basicFiniteInput_verified`. The default build generates and checks the finite certificates. [Main theorem](PrimePrimitiveRoot.lean) · [Finite theorem](FiniteCases.lean) · [Proof of exhaustive coverage](FiniteEnumeration.lean)
 
 | Lean declaration in namespace `JSP818` | What Lean checks |
 | --- | --- |
+| [`erdos_985_of_grh`](PrimePrimitiveRoot.lean) | The original odd-prime conclusion follows from Dirichlet GRH. |
+| [`basicFiniteInput_verified`](FiniteCases.lean) | Every residual prime modulus passes the bounded order test, with complete coverage proved in Lean. |
 | [`grh_twist_envelope` and `erdos_985_of_grh_and_finite`](ExplicitTwist.lean) | Dirichlet GRH alone implies the nonprincipal twist estimate. Combining it with the finite Boolean input proves the original odd-prime target. |
 | `finite_range` | Every odd prime through 2791 inclusive has the required witness. Kernel reduction checks the finite certificate. |
 | `two_exception` | No prime smaller than 2 exists. |
 | [`prime_power_predecessor` and `safe_prime_modulus`](ElementaryFamilies.lean) | For every prime with $p-1=r^{k+1}$ or $p-1=2r$ for prime $r$, Lean proves the full prime-witness conclusion without GRH or a size cutoff. |
 | `odd_primes_of_mcgown_trevino_trudgian` | The published square-root bound and the finite certificate give the conclusion for every odd prime. |
-| `erdos_985` | The original odd-prime target follows with two explicit inputs, Dirichlet GRH and the implication from GRH to the published bound. |
+| [`erdos_985` (published-bound route)](PublishedBound.lean) | The historical wrapper accepts Dirichlet GRH and the published large-prime implication. |
 | [`prime_root_of_large_twist_bound`](SizeBound.lean) | For every prime at least $2^{36}$ the original conclusion follows from a bound on its nonprincipal smoothed character sums. Lean proves the principal sum lower bound and the size comparison. |
 | [`grh_smoothed_zero_bound`](ZeroMassBound.lean) | Dirichlet GRH bounds the sum of the absolute zero kernels by $\frac43(\tfrac12\log p+6)$ for all nonprincipal characters of prime modulus, with analytic multiplicities. |
 | [`logDeriv_grid_poles`](GridFormula.lean) | At $s=3/2+2m$, the change of logarithmic derivative of the Dirichlet $L$-function equals the sum of the changes from all its trivial and nontrivial zeros. |
@@ -23,20 +25,16 @@ There is also a shorter deduction from McGown, Treviño and Trudgian's stronger 
 
 ## Reproduction
 
-Import `PrimePrimitiveRoot` for the direct theorems. With Elan installed, the following commands build the project and reproduce the small certificate. The toolchain file selects Lean 4.34.1 and the Lake manifest pins mathlib and its transitive dependencies. The Hadamard support modules are included with their original notices. [Source revisions](vendor/SOURCES.md)
+Import `PrimePrimitiveRoot` for the GRH-only result. With Elan installed, the following commands build the project and inspect the proof. The toolchain file selects Lean 4.34.1 and the Lake manifest pins mathlib and its transitive dependencies. The Hadamard support modules are included with their original notices. [Source revisions](vendor/SOURCES.md)
 
 ```sh
 lake exe cache get
 lake build
-lake env lean ExplicitTwist.lean
+lake env lean FiniteCases.lean
 lake env lean PrimePrimitiveRoot.lean
-lake env lean ElementaryFamilies.lean
-lake env lean ZeroMassBound.lean
-lake env lean SizeBound.lean
-python check_small_primes.py
 ```
 
-The source prints the transitive axiom dependencies of each listed theorem. The checked declarations use `propext`, `Classical.choice` and `Quot.sound`. Explicit hypotheses remain visible in the types even when only these standard axioms are printed.
+The eight `FiniteCases.K2` through `FiniteCases.K9` modules can also be built individually, for example with `lake build FiniteCases.K5`. The largest case, `K5`, has five independently cached intervals. A low-memory build can run each target in `FiniteCases.Five` individually and then build the eight factor-count modules one at a time. [Five-factor intervals](FiniteCases/Five) All targets share the same certificate generator and coverage proof. The source prints the transitive axiom dependencies of the finite and final theorems. The checked declarations use `propext`, `Classical.choice` and `Quot.sound`. Explicit hypotheses remain visible in the types even when only these standard axioms are printed.
 
 ## Reproducing the larger finite checks
 
@@ -51,8 +49,8 @@ python check_wheel.py
 lake env lean FiniteWitness.lean
 ```
 
-The second and third commands enumerate the residual moduli for two character-sieve inequalities. The refined inequality leaves 23,667 prime moduli above 2791 (about 2 seconds locally). The basic one leaves 111,011 (about 4 seconds). The direct Lean theorem uses the basic inequality. Its input `BasicFiniteInput` asks whether a prime up to 193 passes the full order test at each residual modulus.
+The second and third commands enumerate the residual moduli for two character-sieve inequalities. The refined inequality leaves 23,667 prime moduli above 2791 (about 2 seconds locally). The basic one leaves 111,011 (about 4 seconds). The direct Lean theorem uses the basic inequality. The proved proposition `BasicFiniteInput` says that a prime up to 193 passes the full order test at each residual modulus.
 
-The optional `--lean-replay` command invokes the ordinary Lean kernel on each enumerated modulus. It supplies a factorization and a single witness, processes independent declarations in temporary batches of 2,048, and discards each batch after checking. All 111,011 individual Boolean theorems passed in 55 batches, in about 52 minutes locally. The all-moduli theorem still takes the universally quantified finite input. Connecting the executable enumeration to this universal Lean proposition is the remaining formal step. [Run record for the selected proof commit](verification/finite-kernel.txt) · [Derivation and coverage](PROOF.md#reducing-the-larger-finite-check)
+The optional `--lean-replay` command invokes the ordinary Lean kernel on each enumerated modulus. It supplies a factorization and a single witness, processes independent declarations in temporary batches of 2,048, and discards each batch after checking. All 111,011 individual Boolean theorems passed in 55 batches, in about 52 minutes locally. The default Lean build separately proves the universal proposition by exhausting the possible ordered prime factors and final cofactor. This computation runs inside the normal build and uses Lean kernel reduction on small pages of checked hints. [Earlier pointwise run](verification/finite-kernel.txt) · [Universal proof](PROOF.md#kernel-checked-exhaustion)
 
 `check_wheel.py` audits coverage independently by arithmetic progressions. The two algorithms produce exactly the same 111,011 integers. The wheel's multiplier tables occupy 1,776,237 bytes. [Proof of the wheel bounds](PROOF.md#independent-coverage-by-arithmetic-progressions)

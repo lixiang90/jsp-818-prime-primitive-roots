@@ -20,4 +20,5 @@ roots = ["PrimePrimitiveRoot", "PublishedBound", "ElementaryFamilies", "Dirichle
   "SmoothedSums", "PrincipalMass", "ZeroKernel", "MellinKernel", "SizeBound",
   "BachZeros", "EulerBound", "GammaFactors", "ZeroMassBound", "GridFormula",
   "MomentUniqueness", "KernelBounds", "FiniteWitness", "FiniteReduction", "UnitMoments", "SpecialMoments",
-  "ArithmeticMoments", "ZeroSide", "PoleMoments", "TrivialTail", "FirstPole", "FiniteCaps", "ExplicitTwist"]
+  "ArithmeticMoments", "ZeroSide", "PoleMoments", "TrivialTail", "FirstPole", "FiniteCaps", "ExplicitTwist",
+  "FiniteEnumeration", "CertifyEnumeration", "FiniteCases"]
