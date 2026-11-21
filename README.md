@@ -1,9 +1,12 @@
 # JSP-000818 · Erdős 985
 
-Every odd prime has a smaller **prime** primitive root, assuming Dirichlet GRH. This repository contains the [mathematical proof](PROOF.md), [Lean source](PrimePrimitiveRoot.lean) and an [independent numerical reproduction](check_small_primes.py) for [awards PR #5615](https://github.com/TheJustinSunPrize/awards/pull/5615).
+Assuming Dirichlet GRH, every odd prime $p$ has a prime $q<p$ of multiplicative order $p-1$ modulo $p$. The [mathematical proof](PROOF.md) and Lean developments support [awards PR #5615](https://github.com/TheJustinSunPrize/awards/pull/5615).
+
+**The direct Lean theorem `erdos_985_of_grh_and_finite` takes two inputs.** The first is Dirichlet GRH. The second is a finite Boolean check on small prime witnesses. Lean proves the uniform smoothed character estimate from GRH, the sieve implication, its application to every large modulus, and the correctness of each finite certificate. The basic Python verifier enumerates the 111,011 residual prime moduli and finds a witness at most 193 for each in about four seconds. [Direct theorem](ExplicitTwist.lean) · [Definition of the finite input](FiniteReduction.lean) · [Witness checker](FiniteWitness.lean)
 
 | Lean declaration in namespace `JSP818` | What Lean checks |
 | --- | --- |
+| [`grh_twist_envelope` and `erdos_985_of_grh_and_finite`](ExplicitTwist.lean) | Dirichlet GRH alone implies the nonprincipal twist estimate. Combining it with the finite Boolean input proves the original odd-prime target. |
 | `finite_range` | Every odd prime through 2791 inclusive has the required witness. Kernel reduction checks the finite certificate. |
 | `two_exception` | No prime smaller than 2 exists. |
 | [`prime_power_predecessor` and `safe_prime_modulus`](ElementaryFamilies.lean) | For every prime with $p-1=r^{k+1}$ or $p-1=2r$ for prime $r$, Lean proves the full prime-witness conclusion without GRH or a size cutoff. |
@@ -15,7 +18,7 @@ Every odd prime has a smaller **prime** primitive root, assuming Dirichlet GRH. 
 | [`rootCertificate_sound`](FiniteWitness.lean) | A prime witness and a factorization of $p-1$ can be checked by binary modular exponentiation for $p\le 2^{36}$. The same kernel proof verifies the example $p=13{,}123{,}111$, $q=19$. |
 | [`odd_primes_of_twist_envelope`](FiniteReduction.lean) | The explicit smoothed-sum bound and a finite input with an integer-only test imply Erdős 985. The basic sieve program checks the 111,011 prime moduli selected by this test. |
 
-The remaining formal step is the proof of `DirichletGRH → McGownTrevinoTrudgianBound`. The top-level theorem takes it as an argument. The mathematical proof cites Theorem 1 of the 2016 paper. Alpöge's development is an external premise and the local build does not import or independently check it. The award PR submits mathematical evidence. [Paper](https://campus.lakeforest.edu/trevino/GrosswaldGRH.pdf#page=2) · [Upstream GRH statement](https://github.com/CocoSgt/riemann-hypothesis-lean/blob/7cbf7a0c32fca1badf05931879a37c3f8a2b03b4/src/Statements.lean#L5-L7)
+There is also a shorter deduction from McGown, Treviño and Trudgian's stronger bound $q<\sqrt p-2$. It needs just 405 odd primes checked in the kernel. Its Lean theorem `erdos_985` takes the published large-prime implication as an explicit argument. Both routes accept the Dirichlet GRH statement used by Alpöge as a premise. [Paper, Theorem 1](https://campus.lakeforest.edu/trevino/GrosswaldGRH.pdf#page=2) · [Upstream GRH statement](https://github.com/CocoSgt/riemann-hypothesis-lean/blob/7cbf7a0c32fca1badf05931879a37c3f8a2b03b4/src/Statements.lean#L5-L7)
 
 ## Reproduction
 
@@ -24,6 +27,7 @@ From this repository with Elan installed, run the following commands. The toolch
 ```sh
 lake exe cache get
 lake build
+lake env lean ExplicitTwist.lean
 lake env lean PrimePrimitiveRoot.lean
 lake env lean ElementaryFamilies.lean
 lake env lean ZeroMassBound.lean
@@ -41,7 +45,10 @@ The exhaustive run checks every odd prime up to $2^{24}$ with the Python standar
 python check_sieve_exceptions.py --all-through 16777216
 python check_sieve_exceptions.py
 python check_sieve_exceptions.py --basic
+python check_sieve_exceptions.py --basic --lean-replay
 lake env lean FiniteWitness.lean
 ```
 
-The second and third commands enumerate only the residual moduli for two character-sieve inequalities. The refined inequality leaves 23,667 prime moduli above 2791 (about 2 seconds locally). The basic one leaves 111,011 (about 4 seconds). All reported witnesses satisfy the full order test. The optional Lean input `BasicFiniteInput` asks for a Boolean modular-arithmetic check at the basic residuals, with candidates up to 193. Using either sieve to discharge the complementary moduli in the direct Lean proof still requires the smoothed-sum estimate. [Derivation and coverage](PROOF.md#reducing-the-larger-finite-check)
+The second and third commands enumerate the residual moduli for two character-sieve inequalities. The refined inequality leaves 23,667 prime moduli above 2791 (about 2 seconds locally). The basic one leaves 111,011 (about 4 seconds). The direct Lean theorem uses the basic inequality. Its input `BasicFiniteInput` asks whether a prime up to 193 passes the full order test at each residual modulus.
+
+The optional `--lean-replay` command also invokes the ordinary Lean kernel on each enumerated modulus. It supplies a factorization and a single witness, processes independent declarations in temporary batches of 2,048, and discards each batch after checking. The individual declarations prove the bounded Boolean result for the generated integers. The current all-moduli theorem takes the universally quantified finite input, which also requires coverage of the residual set. [Derivation and coverage](PROOF.md#reducing-the-larger-finite-check)

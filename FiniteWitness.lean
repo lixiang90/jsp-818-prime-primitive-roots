@@ -1,4 +1,5 @@
 import Mathlib.FieldTheory.Finite.Basic
+import Mathlib.Data.Nat.Factors
 import Mathlib.Tactic.NormNum.Prime
 
 namespace JSP818
@@ -85,6 +86,22 @@ theorem rootCertificate_sound {p q : ℕ} (hp : p.Prime) (hu : p ≤ 2 ^ 36)
   rw [← Nat.cast_pow, ← Nat.cast_one (R := ZMod p), ZMod.natCast_eq_natCast_iff] at hz
   exact Eq.trans hz (Nat.mod_eq_of_lt hp.one_lt)
 
+/-- Bounded Boolean test on the canonical prime factorization. -/
+def finiteModulusCheck (p : ℕ) : Bool :=
+  (List.range 194).any (fun q => rootCertificate p q (p - 1).primeFactorsList)
+
+/-- A certificate supplies the result of the bounded search without requiring
+the kernel to enumerate candidates or refactor the predecessor. -/
+theorem finiteModulusCheck_of_certificate {p q : ℕ} {factors : List ℕ}
+    (hq : q < 194) (ok : rootCertificate p q factors = true) : finiteModulusCheck p = true := by
+  simp only [rootCertificate, Bool.and_eq_true, decide_eq_true_eq, List.all_eq_true] at ok
+  obtain ⟨⟨⟨lt, prod⟩, prime⟩, tests⟩ := ok
+  have perm := Nat.primeFactorsList_unique prod (fun r h => trialPrime_sound (tests r h).1)
+  apply List.any_eq_true.mpr
+  refine ⟨q, List.mem_range.mpr hq, ?_⟩
+  simp only [rootCertificate, Bool.and_eq_true, decide_eq_true_eq, List.all_eq_true]
+  exact ⟨⟨⟨lt, perm.prod_eq.symm.trans prod⟩, prime⟩, fun r h => tests r (perm.mem_iff.mpr h)⟩
+
 /-- The largest residual modulus in the refined search has eight distinct
 prime factors in its predecessor. The kernel can check this case directly. -/
 theorem witness_13123111 : orderOf (19 : ZMod 13123111) = 13123110 := by
@@ -93,6 +110,7 @@ theorem witness_13123111 : orderOf (19 : ZMod 13123111) = 13123110 := by
   exact h.2.2
 
 #print axioms rootCertificate_sound
+#print axioms finiteModulusCheck_of_certificate
 #print axioms witness_13123111
 
 end JSP818

@@ -13,7 +13,7 @@ open scoped Topology
 
 def mellinPoint (m : ℕ) : ℝ := 3 / 2 + 2 * m
 
-private theorem hasSum_shift_difference (f : ℕ → ℝ) (anti : Antitone f)
+theorem hasSum_shift_difference (f : ℕ → ℝ) (anti : Antitone f)
     (lim : Tendsto f atTop (𝓝 0)) (m : ℕ) :
     HasSum (fun j => f j - f (j + m)) (∑ k ∈ range m, f k) := by
   have step (k : ℕ) : HasSum (fun j => f (j + k) - f ((j + 1) + k)) (f k) := by
@@ -82,6 +82,16 @@ private theorem gamma_grid_difference {a : ℝ} (ha : 0 ≤ a) (m : ℕ) :
   rw [hm]
   dsimp only [t]
   ring
+
+/-- Isolate the first trivial pole so its logarithmic smoothing term is
+handled separately from the absolutely summable tail. -/
+theorem trivial_grid_split {a : ℝ} (ha : 0 ≤ a) (m : ℕ) :
+    (∑' j : ℕ, (((mellinPoint m : ℂ) + a + 2*j)⁻¹ - (bachRightPoint + a + 2*j)⁻¹)) =
+      (((mellinPoint m : ℂ) + a)⁻¹ - (bachRightPoint + a)⁻¹) +
+      ∑' j : ℕ, (((mellinPoint m : ℂ) + a + 2*((j : ℂ)+1))⁻¹ -
+        (bachRightPoint + a + 2*((j : ℂ)+1))⁻¹) := by
+  have h := ((trivial_poles_sum ha m).summable.sum_add_tsum_nat_add 1).symm
+  simpa [trivialDifference] using h
 
 private theorem grid_conductor_ne {p : ℕ} [NeZero p] {χ : DirichletCharacter ℂ p}
     (hχ : χ ≠ 1) {z : ℂ} (hz : 1 ≤ z.re) : conductorCompletedL χ z ≠ 0 :=

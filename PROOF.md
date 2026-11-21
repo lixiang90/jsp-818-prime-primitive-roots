@@ -41,24 +41,36 @@ $$\sum_\rho\frac1{|b-\rho|^2}=\frac12\Re\bigl(D_\chi(b)+D_{\chi^{-1}}(b)\bigr)\l
 
 For the upper bound, the tangent inequality for $\log\Gamma$ on $[u,u+1]$ gives $\Re\psi(u)\le\log u$, using $\Gamma(u+1)=u\Gamma(u)$. This bounds the archimedean term for both parities. The absolutely convergent Euler series satisfies $|L'/L(3/2,\chi)|\le6$. Indeed $\Lambda(n)\le\log n\le\tfrac32 n^{1/4}$ and $\sum_{n\ge2} n^{-5/4}\le4$. Since $|\rho(\rho+1)|^{-1}\le\tfrac43|b-\rho|^{-2}$, the total zero kernel is at most $\tfrac43(\tfrac12\log p+6)$. [Hadamard subtraction](BachZeros.lean) · [Archimedean factor](GammaFactors.lean) · [Euler factor](EulerBound.lean) · [Combined bound](ZeroMassBound.lean)
 
-The grid identity expresses $L'/L(s,\chi)-L'/L(b,\chi)$ as the sum of $(s-\rho)^{-1}-(b-\rho)^{-1}$ over the nontrivial and trivial zeros at $s=b+2m$. The gamma recurrence telescopes the trivial-zero contribution. The inverse Mellin kernel for a single nontrivial zero has been checked by integration. The remaining steps in this direct formal route are to identify the full inverse transform with $T_\chi(p)$, bound its total error, and certify the moduli below the resulting cutoff. [Grid identity](GridFormula.lean) · [Mellin kernel](MellinKernel.lean) · [Pointwise kernel estimate](KernelBounds.lean)
+The grid identity expresses $L'/L(s,\chi)-L'/L(b,\chi)$ as the sum of $(s-\rho)^{-1}-(b-\rho)^{-1}$ over the nontrivial and trivial zeros at $s=b+2m$. The gamma recurrence telescopes the trivial-zero contribution. For $\rho\ne0,-1$ the corresponding inverse kernel after division by $s(s+1)$ is
+
+$$G_\rho(y)=\frac{y^{-\rho}}{\rho(\rho+1)}
+ -\frac{b}{\rho(b-\rho)}
+ +\frac{y(b+1)}{(\rho+1)(b-\rho)}.$$
+
+Write $a=0$ for even characters and $a=1$ for odd characters. The first trivial zero has kernel $G_0(y)=-\log y-\tfrac53(1-y)$ or $G_{-1}(y)=\tfrac35(1-y)+y\log y$. At $y=1/p$ either has absolute value at most $\log p+2$. For the remaining trivial zeros $-k$, $k=a+2j+2$, one has $|G_{-k}(y)|\le5/[k(k-1)]$ on $0\le y\le1$. Their total is at most 5 by telescoping. The nontrivial kernels have total norm at most $(\tfrac43y^{-1/2}+3+\tfrac52y)(\tfrac12\log p+6)$ under GRH. [Grid identity](GridFormula.lean) · [Nontrivial kernels](ZeroSide.lean) · [First trivial kernel](FirstPole.lean) · [Trivial tail](TrivialTail.lean)
+
+To identify the sum with the arithmetic quantity, multiply both sides by $y^{5/2}$. The resulting functions are continuous on $[0,1]$. Their moments against $y^{2m}$ agree for every $m\ge0$ by the logarithmic-derivative grid identity and termwise integration against summable uniform majorants. Polynomials in $y^2$ are dense in the continuous functions on $[0,1]$, by applying polynomial approximation to the function composed with $\sqrt{\cdot}$. Thus the normalized functions agree pointwise. At $y=1/p$ the arithmetic side is exactly $p^{-5/2}T_\chi(p)$. This proves the following estimate in Lean using Dirichlet GRH alone:
+
+$$|T_\chi(p)|\le\big(\tfrac23\log p+8\big)\sqrt p+3\log p+37 \qquad(p>2791).$$
+
+The constant 37 follows from the first trivial kernel's additive 2, the tail bound 5, the Euler bound 6, and $4\cdot6$ from the nontrivial zeros. The remaining linear term is bounded by $|L'/L(b)|(1-1/p)\le6$. [Arithmetic moments](ArithmeticMoments.lean) · [Pole moments](PoleMoments.lean) · [Uniqueness](MomentUniqueness.lean) · [Explicit formula and final estimate](ExplicitTwist.lean)
 
 ## Reducing the larger finite check
 
-The published proof above needs only the 405 odd primes through 2791. The following estimates concern the independent direct proof, which currently reaches a different cutoff. They specify exactly what is verified computationally there.
+The deduction from the published square-root bound needs only the 405 odd primes through 2791. The independent direct proof uses the weaker target $q<p$ and the following finite calculation.
 
-For $2791<p<2^{36}$ let $b$ be the bit length of $p$ and $k=\omega(p-1)$. The target estimate for the smoothed twist in this argument is
+For $2791<p<2^{36}$ let $b$ be the bit length of $p$ and $k=\omega(p-1)$. Before rounding the lower-order terms, the explicit formula bounds the smoothed twist by
 
 $$
  B(p)=\left(\tfrac43\sqrt p+3+\tfrac5{2p}\right)
        \left(\tfrac12\log p+6\right)+\log p+13.
 $$
 
-Here the first contribution is the sum over nontrivial zeros. Recovering the whole twist from the pole kernels is an outstanding analytic step in Lean. For $p>2791$ the displayed expression is at most $((2/3)\log p+8)\sqrt p+3\log p+37$. Also $3\log p+37\le2\sqrt p$: the difference is increasing for $p>9$ and positive at 2048 (use $\log 2<0.7$). Hence $B(p)\le(7b/15+10)\sqrt p$. For a sieve error coefficient $C$, the lower bound $p/3$ for the principal mass now wins whenever
+For $p>2791$ this expression is at most $((2/3)\log p+8)\sqrt p+3\log p+37$. Also $3\log p+37\le2\sqrt p$, since the difference is increasing for $p>9$ and positive at 2048 (use $\log 2<0.7$). Hence $B(p)\le(7b/15+10)\sqrt p$. For a sieve error coefficient $C$, the lower bound $p/3$ for the principal mass now wins whenever
 
 $$25p>(150+7b)^2 C^2.$$
 
-* **Full character sieve.** Put $C=2^k-1$. This sieve implication is proved in Lean. Applying the integer comparison leaves 111,011 prime moduli above 2791, the largest being 1,402,927,891. The program finds a prime primitive root for each in about 4 seconds on the development machine. [Lean character sieve](CharacterSieve.lean)
+* **Full character sieve.** Put $C=2^k-1$. Applying the integer comparison leaves 111,011 prime moduli above 2791, the largest being 1,402,927,891. The program finds a prime primitive root for each in about 4 seconds on the development machine. The largest least witness is 193. The formal theorem assumes that at each residual prime the bounded search over $q<194$ succeeds, using every prime divisor of $p-1$. All infinite ranges and all implications from this finite input and GRH are proved in Lean. [Character sieve](CharacterSieve.lean) · [Exact finite predicate](FiniteReduction.lean) · [Direct theorem](ExplicitTwist.lean)
 * **Fewer cases with a core of prime factors.** Choose a subset $S$ of the prime factors of $p-1$ and let $R$ be the remaining factors. Put $\delta=1-\sum_{r\in R}1/r$. If $R$ is nonempty and $\delta>0$, one can take $C=2^{|S|}(2+(|R|-1)/\delta)-1$. To see this, normalize the indicator of avoiding the $s$th powers for $s\in S$ by dividing by $\prod_{s\in S}(1-1/s)$. Its sum against the nonnegative weights is $W_S$. Character orthogonality gives $W_S\ge M-(2^{|S|}-1)B$ for principal mass $M$. For $r\in R$, the total weight lost among these survivors is at most $W_S/r+(1-1/r)2^{|S|}B$. Indeed the normalized $r$-indicator has constant coefficient one, and its nonconstant coefficients have total absolute value one. Multiplication by the normalized $S$-indicator gives exclusively nonprincipal twists in this difference, since their character orders have a factor $r$. The union bound gives surviving weight at least $\delta W_S-2^{|S|}(|R|-1+\delta)B$, as asserted. For a fixed core size, choosing the smallest factors for $S$ maximizes $\delta$. Taking the better of all these choices and the full sieve leaves the following cases. This refinement is a paper argument. [Related prime-divisor sieve in McGown, Treviño and Trudgian, §3](https://campus.lakeforest.edu/trevino/GrosswaldGRH.pdf)
 
 | Distinct factors of $p-1$ | Prime moduli checked | Largest such $p$ | Largest least prime root |

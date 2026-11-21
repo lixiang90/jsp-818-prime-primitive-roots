@@ -14,11 +14,6 @@ upper bound for its lower order terms. -/
 def twistEnvelope (p : ℕ) : ℝ :=
   (2 / 3 * log p + 8) * √(p : ℝ) + 3 * log p + 37
 
-/-- A decidable statement at one modulus using the canonical factorization.
-The basic sieve run attains 193 as the largest least witness. -/
-def finiteModulusCheck (p : ℕ) : Bool :=
-  (List.range 194).any (fun q => rootCertificate p q (p - 1).primeFactorsList)
-
 /-- An exact finite input; it contains only natural-number arithmetic and
 the explicitly bounded witness search above. -/
 def BasicFiniteInput : Prop :=

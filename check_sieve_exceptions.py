@@ -9,6 +9,9 @@ from argparse import ArgumentParser
 from array import array
 from fractions import Fraction
 from math import isqrt, prod
+from pathlib import Path
+from subprocess import run
+from tempfile import TemporaryDirectory
 
 
 FIRST_PRIMES = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31)
@@ -97,7 +100,7 @@ def least_witness(p, factors, primes):
     raise ArithmeticError((p, "prime primitive root not found in the candidate table"))
 
 
-def check(refined):
+def check(refined, record=None):
     assert prod(FIRST_PRIMES) > UPPER
     rows = []
     for k in range(1, len(FIRST_PRIMES)):
@@ -120,11 +123,50 @@ def check(refined):
             if p > dyadic_limit(p.bit_length(), coefficient(factors, refined)):
                 continue
             q = least_witness(p, factors, candidates)
+            if record is not None:
+                record(p, q, factors)
             count += 1
             largest_p, largest_q = max(largest_p, p), max(largest_q, q)
         total += count
         print(k, bound, count, largest_p, largest_q, sep=" | ", flush=True)
     print("total verified", total)
+
+
+def replay_in_lean(refined):
+    """Ask the ordinary Lean kernel to prove a pointwise Boolean theorem for every row."""
+    project = Path(__file__).resolve().parent
+    with TemporaryDirectory(prefix="jsp818-") as directory:
+        module = Path(directory) / "FiniteReplay.lean"
+        declarations = []
+        checked = 0
+
+        def flush():
+            nonlocal checked
+            if declarations:
+                module.write_text("import FiniteWitness\nopen JSP818\n" +
+                                  "\n".join(declarations) + "\n", encoding="utf-8")
+                run(["lake", "env", "lean", "-j", "1", "-M", "3000", str(module)],
+                    cwd=project, check=True)
+                checked += len(declarations)
+                declarations.clear()
+                print("Lean pointwise checks", checked, flush=True)
+
+        def record(p, q, factors):
+            remainder = p - 1
+            full = []
+            for r in factors:
+                while remainder % r == 0:
+                    full.append(r)
+                    remainder //= r
+            assert remainder == 1
+            declarations.append(
+                f"example : finiteModulusCheck {p} = true := finiteModulusCheck_of_certificate "
+                f"(q := {q}) (factors := {full}) (by decide) (by decide +kernel)")
+            if len(declarations) == 2048:
+                flush()
+
+        check(refined, record)
+        flush()
 
 
 def check_all_through(limit):
@@ -164,8 +206,14 @@ if __name__ == "__main__":
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--basic", action="store_true", help="use only the full character sieve")
     mode.add_argument("--all-through", type=int, metavar="N", help="check every odd prime <= N")
+    parser.add_argument("--lean-replay", action="store_true",
+                        help="kernel-check each sparse witness in temporary batches after lake build")
     args = parser.parse_args()
-    if args.all_through is None:
+    if args.lean_replay:
+        if args.all_through is not None:
+            parser.error("--lean-replay applies to the basic or refined residual sieve")
+        replay_in_lean(not args.basic)
+    elif args.all_through is None:
         check(not args.basic)
     else:
         check_all_through(args.all_through)

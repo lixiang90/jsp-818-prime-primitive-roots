@@ -9,6 +9,8 @@ namespace JSP818
 
 open Set MeasureTheory
 
+abbrev unitExponent : ℝ := 5 / 2
+
 /-- Absolute uniform majorants allow termwise integration on the unit interval. -/
 theorem unit_hasSum_integral {ι : Type*} [Countable ι] {F : ι → ℝ → ℂ} {w : ι → ℝ}
     (cont : ∀ i, ContinuousOn (F i) (Icc 0 1)) (hw : Summable w)
