@@ -19,4 +19,4 @@ name = "PrimePrimitiveRoot"
 roots = ["PrimePrimitiveRoot", "ElementaryFamilies", "DirichletGRH", "CharacterSieve",
   "SmoothedSums", "PrincipalMass", "ZeroKernel", "MellinKernel", "SizeBound",
   "BachZeros", "EulerBound", "GammaFactors", "ZeroMassBound", "GridFormula",
-  "MomentUniqueness", "KernelBounds", "FiniteWitness", "UnitMoments", "SpecialMoments"]
+  "MomentUniqueness", "KernelBounds", "FiniteWitness", "FiniteReduction", "UnitMoments", "SpecialMoments"]

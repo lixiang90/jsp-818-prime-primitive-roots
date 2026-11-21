@@ -13,6 +13,7 @@ Every odd prime has a smaller **prime** primitive root, assuming Dirichlet GRH. 
 | [`grh_smoothed_zero_bound`](ZeroMassBound.lean) | Dirichlet GRH bounds the sum of the absolute zero kernels by $\frac43(\tfrac12\log p+6)$ for all nonprincipal characters of prime modulus, with analytic multiplicities. |
 | [`logDeriv_grid_poles`](GridFormula.lean) | At $s=3/2+2m$, the change of logarithmic derivative of the Dirichlet $L$-function equals the sum of the changes from all its trivial and nontrivial zeros. |
 | [`rootCertificate_sound`](FiniteWitness.lean) | A prime witness and a factorization of $p-1$ can be checked by binary modular exponentiation for $p\le 2^{36}$. The same kernel proof verifies the example $p=13{,}123{,}111$, $q=19$. |
+| [`odd_primes_of_twist_envelope`](FiniteReduction.lean) | The explicit smoothed-sum bound and a finite input with an integer-only test imply Erdős 985. The basic sieve program checks the 111,011 prime moduli selected by this test. |
 
 The remaining formal step is the proof of `DirichletGRH → McGownTrevinoTrudgianBound`. The top-level theorem takes it as an argument. The mathematical proof cites Theorem 1 of the 2016 paper. Alpöge's development is an external premise and the local build does not import or independently check it. The award PR submits mathematical evidence. [Paper](https://campus.lakeforest.edu/trevino/GrosswaldGRH.pdf#page=2) · [Upstream GRH statement](https://github.com/CocoSgt/riemann-hypothesis-lean/blob/7cbf7a0c32fca1badf05931879a37c3f8a2b03b4/src/Statements.lean#L5-L7)
 
