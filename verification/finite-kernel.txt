@@ -1,0 +1,114 @@
+JSP-000818 | finite verification run | 2026-11-21
+Selected proof commit 5f3511d5420b55229fd9ff47883ea8379306f2d9
+Lean 4.34.1 on Windows x86-64, Python 3.12.5
+
+The direct theorem takes Dirichlet GRH and BasicFiniteInput. The Lean
+run below proves finiteModulusCheck p = true for each enumerated p.
+Lean proves that every residual modulus lies on the bounded wheel.
+Two programs independently enumerate that set. The universal finite
+input remains an argument of the direct Lean theorem.
+
+lake build
+info: ExplicitTwist.lean:145:0: 'JSP818.erdos_985_of_grh_and_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: ExplicitTwist.lean:146:0: 'JSP818.erdos_985_of_grh_and_wheel' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: PrimePrimitiveRoot.lean:8:0: 'JSP818.erdos_985_of_grh_and_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
+Build completed successfully (8966 jobs).
+
+python check_sieve_exceptions.py --basic --lean-replay
+One Lean thread per batch. 55 batches including a final batch of 419.
+Start 2026-11-21 00:52:37 UTC. Finish 2026-11-21 01:44:58 UTC.
+Approximate wall time 3141 seconds from the run log timestamps.
+Process exit code 0.
+
+prime table limit 37507
+omega | modulus cap | moduli checked | largest checked p | largest least q
+2 | 23409 | 385 | 23399 | 23
+Lean pointwise checks 2048
+Lean pointwise checks 4096
+Lean pointwise checks 6144
+3 | 149304 | 5777 | 149257 | 61
+Lean pointwise checks 8192
+Lean pointwise checks 10240
+Lean pointwise checks 12288
+Lean pointwise checks 14336
+Lean pointwise checks 16384
+Lean pointwise checks 18432
+Lean pointwise checks 20480
+Lean pointwise checks 22528
+Lean pointwise checks 24576
+Lean pointwise checks 26624
+4 | 756900 | 22417 | 756887 | 107
+Lean pointwise checks 28672
+Lean pointwise checks 30720
+Lean pointwise checks 32768
+Lean pointwise checks 34816
+Lean pointwise checks 36864
+Lean pointwise checks 38912
+Lean pointwise checks 40960
+Lean pointwise checks 43008
+Lean pointwise checks 45056
+Lean pointwise checks 47104
+Lean pointwise checks 49152
+Lean pointwise checks 51200
+Lean pointwise checks 53248
+Lean pointwise checks 55296
+Lean pointwise checks 57344
+Lean pointwise checks 59392
+Lean pointwise checks 61440
+Lean pointwise checks 63488
+Lean pointwise checks 65536
+5 | 3552471 | 37637 | 3552397 | 149
+Lean pointwise checks 67584
+Lean pointwise checks 69632
+Lean pointwise checks 71680
+Lean pointwise checks 73728
+Lean pointwise checks 75776
+Lean pointwise checks 77824
+Lean pointwise checks 79872
+Lean pointwise checks 81920
+Lean pointwise checks 83968
+Lean pointwise checks 86016
+Lean pointwise checks 88064
+Lean pointwise checks 90112
+Lean pointwise checks 92160
+Lean pointwise checks 94208
+Lean pointwise checks 96256
+6 | 16054446 | 30429 | 16054231 | 179
+Lean pointwise checks 98304
+Lean pointwise checks 100352
+Lean pointwise checks 102400
+Lean pointwise checks 104448
+Lean pointwise checks 106496
+Lean pointwise checks 108544
+7 | 74142432 | 12265 | 74141341 | 193
+Lean pointwise checks 110592
+8 | 324108009 | 1999 | 324097621 | 181
+9 | 1406805054 | 102 | 1402927891 | 149
+total verified 111011
+Lean pointwise checks 111011
+
+python check_wheel.py
+prime table limit 37507
+omega | modulus cap | moduli checked | largest checked p | largest least q
+2 | 23409 | 385 | 23399 | 23
+3 | 149304 | 5777 | 149257 | 61
+4 | 756900 | 22417 | 756887 | 107
+5 | 3552471 | 37637 | 3552397 | 149
+6 | 16054446 | 30429 | 16054231 | 179
+7 | 74142432 | 12265 | 74141341 | 193
+8 | 324108009 | 1999 | 324097621 | 181
+9 | 1406805054 | 102 | 1402927891 | 149
+total verified 111011
+largest multiplier 592078 multiplier-table bytes 1776237
+identical residual prime sets 111011
+elapsed seconds 6.576
+
+python check_sieve_exceptions.py --all-through 16777216
+odd primes verified 1077870 through 16777216
+largest least prime primitive root 211 first attained at 4022911
+factor table bytes 16777216
+elapsed seconds 8.709
+
+Among the basic residual primes, the least prime witness equals 193 at
+p = 29,008,981. The largest modulus, p = 1,402,927,891, has witness 3.
+The table-byte figures above measure the sieve arrays.
