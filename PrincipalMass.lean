@@ -1,7 +1,7 @@
 import SmoothedSums
 import Mathlib.Data.Nat.Choose.Factorization
 import Mathlib.Data.Nat.Choose.Sum
-import Mathlib.Data.Complex.ExponentialBounds
+import Mathlib.Analysis.Complex.ExponentialBounds
 
 /-! An elementary lower bound for the principal sum. Every prime power
 dividing a binomial coefficient in row `n` is at most `n`. The largest entry

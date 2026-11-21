@@ -3,10 +3,20 @@ defaultTargets = ["PrimePrimitiveRoot"]
 
 [[require]]
 name = "mathlib"
-scope = "leanprover-community"
-git = "https://github.com/leanprover-community/mathlib4"
-rev = "f1ac36db8804628f81d1c7ee3401231e549d3a6e"
+git = "https://github.com/leanprover-community/mathlib4.git"
+rev = "d13f23b723b8a846827a245b89c10fc7d3f11612"
+
+[[lean_lib]]
+name = "PrimeNumberTheoremAnd"
+srcDir = "vendor"
+
+[[lean_lib]]
+name = "OAI"
+srcDir = "vendor"
 
 [[lean_lib]]
 name = "PrimePrimitiveRoot"
-roots = ["PrimePrimitiveRoot", "ElementaryFamilies", "DirichletGRH", "CharacterSieve", "SmoothedSums", "PrincipalMass", "ZeroKernel", "MellinKernel", "SizeBound"]
+roots = ["PrimePrimitiveRoot", "ElementaryFamilies", "DirichletGRH", "CharacterSieve",
+  "SmoothedSums", "PrincipalMass", "ZeroKernel", "MellinKernel", "SizeBound",
+  "BachZeros", "EulerBound", "GammaFactors", "ZeroMassBound", "GridFormula",
+  "MomentUniqueness", "KernelBounds", "FiniteWitness", "UnitMoments", "SpecialMoments"]

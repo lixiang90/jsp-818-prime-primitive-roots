@@ -13,7 +13,8 @@ open DirichletCharacter
 theorem primitive_of_prime_modulus {p : ℕ} (hp : p.Prime) {χ : DirichletCharacter ℂ p}
     (hχ : χ ≠ 1) : χ.IsPrimitive := by
   rcases (Nat.dvd_prime hp).mp χ.conductor_dvd_level with h | h
-  · exact (hχ ((eq_one_iff_conductor_eq_one hp.ne_zero).mpr h)).elim
+  · have : NeZero p := ⟨hp.ne_zero⟩
+    exact (hχ (eq_one_iff_conductor_eq_one.mpr h)).elim
   · exact h
 
 /-- GRH and the functional equation put every zero of a completed,

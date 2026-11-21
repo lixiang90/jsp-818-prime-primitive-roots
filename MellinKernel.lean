@@ -31,11 +31,13 @@ private theorem anchored_partial_fractions {s ρ b : ℂ}
         ((s - ρ)⁻¹ - (b - ρ)⁻¹) / (s * (s + 1)) := by
   have h1 : b / (ρ * (b - ρ)) = ρ⁻¹ + (b - ρ)⁻¹ := by
     field_simp [hρ, hbρ]
+    ring
   have h2 : (b + 1) / ((ρ + 1) * (b - ρ)) = (ρ + 1)⁻¹ + (b - ρ)⁻¹ := by
     field_simp [hρ1, hbρ]
     ring
   have h3 : s⁻¹ - (s + 1)⁻¹ = (s * (s + 1))⁻¹ := by
     field_simp [hs, hs1]
+    ring
   have h4 : (s - ρ)⁻¹ * (ρ * (ρ + 1))⁻¹ - s⁻¹ * ρ⁻¹ + (s + 1)⁻¹ * (ρ + 1)⁻¹ =
       (s - ρ)⁻¹ * (s * (s + 1))⁻¹ := by
     have gap {a c : ℂ} (ha : a ≠ 0) (hc : c ≠ 0) (hd : c - a ≠ 0) :
@@ -50,6 +52,7 @@ private theorem anchored_partial_fractions {s ρ b : ℂ}
     rw [show s + 1 - (s - ρ) = ρ + 1 by ring] at d'
     have e : ρ⁻¹ - (ρ + 1)⁻¹ = (ρ * (ρ + 1))⁻¹ := by
       field_simp [hρ, hρ1]
+      ring
     rw [← e, ← h3]
     linear_combination d - d'
   rw [h1, h2, div_eq_mul_inv]

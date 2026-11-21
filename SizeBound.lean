@@ -35,7 +35,7 @@ private theorem prime_factor_count_aux (S : Finset ℕ) (hS : ∀ r ∈ S, r.Pri
     (16 : ℝ≥0) ^ S.card = ∏ _r ∈ S, 16 := by simp
     _ ≤ ∏ r ∈ S, (w r * r) := prod_le_prod' point
     _ = (∏ r ∈ S, w r) * ∏ r ∈ S, (r : ℝ≥0) := prod_mul_distrib
-    _ ≤ _ := mul_le_mul_right' extra _
+    _ ≤ _ := mul_le_mul_of_nonneg_right extra zero_le
 
 /-- The six primes below 16 give a uniform numerical version of the
 subpolynomial growth of the number of squarefree divisors. -/
@@ -46,7 +46,7 @@ theorem prime_factor_count_bound {n : ℕ} (hn : 0 < n) :
   have hr : (∏ r ∈ n.primeFactors, (r : ℝ≥0)) ≤ (n : ℝ≥0) := by
     rw [← Nat.cast_prod (fun r : ℕ => r)]
     exact_mod_cast hrad
-  exact_mod_cast h.trans (mul_le_mul_left' hr 560)
+  exact_mod_cast h.trans (mul_le_mul_of_nonneg_left hr (show 0 ≤ (560 : ℝ≥0) from zero_le))
 
 /-- At this explicit cutoff the elementary size condition in the character sieve
 holds for every modulus, regardless of the factorization of its predecessor. -/
