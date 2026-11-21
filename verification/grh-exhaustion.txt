@@ -1,0 +1,90 @@
+JSP-000818 / Erdős 985 — verification record, 2026-11-21
+Selected proof commit: 6d284a54b1ca6a35bc583e7dbd1f90b8f5500139
+Lean 4.34.1, mathlib d13f23b723b8a846827a245b89c10fc7d3f11612
+
+The selected source builds a proof of BasicFiniteInput without hypotheses.
+The main theorem applies it to the analytic implication from Dirichlet GRH.
+The parameter p ranges over primes other than 2. The conclusion says there
+is a prime q < p whose multiplicative order modulo p is p - 1.
+
+Build and declaration audit
+
+The eight FiniteCases.K2 through FiniteCases.K9 targets were compiled with
+the normal Lean kernel. Lake reused unchanged dependencies and cached the
+five intervals in FiniteCases.Five separately. The default target includes
+the universal finite theorem and the analytic proof. The audit below imports
+the resulting public entry point.
+
+$ lake build
+Build completed successfully (8983 jobs).
+
+$ lake env lean audit.lean
+JSP818.basicFiniteInput_verified : JSP818.BasicFiniteInput
+JSP818.erdos_985_of_grh (grh : JSP818.DirichletGRH) (p : ℕ) (hp : Nat.Prime p) (hne : p ≠ 2) :
+  JSP818.HasSmallPrimeRoot p
+'JSP818.basicFiniteInput_verified' depends on axioms: [propext, Classical.choice, Quot.sound]
+'JSP818.erdos_985_of_grh' depends on axioms: [propext, Classical.choice, Quot.sound]
+'JSP818.Enumeration.cover2' depends on axioms: [propext, Classical.choice, Quot.sound]
+'JSP818.Enumeration.cover3' depends on axioms: [propext, Classical.choice, Quot.sound]
+'JSP818.Enumeration.cover4' depends on axioms: [propext, Classical.choice, Quot.sound]
+'JSP818.Enumeration.cover5' depends on axioms: [propext, Classical.choice, Quot.sound]
+'JSP818.Enumeration.cover6' depends on axioms: [propext, Classical.choice, Quot.sound]
+'JSP818.Enumeration.cover7' depends on axioms: [propext, Classical.choice, Quot.sound]
+'JSP818.Enumeration.cover8' depends on axioms: [propext, Classical.choice, Quot.sound]
+'JSP818.Enumeration.cover9' depends on axioms: [propext, Classical.choice, Quot.sound]
+
+Contents of audit.lean:
+
+  import PrimePrimitiveRoot
+  #check JSP818.basicFiniteInput_verified
+  #check JSP818.erdos_985_of_grh
+  #print axioms JSP818.basicFiniteInput_verified
+  #print axioms JSP818.erdos_985_of_grh
+  #print axioms JSP818.Enumeration.cover2
+  #print axioms JSP818.Enumeration.cover3
+  #print axioms JSP818.Enumeration.cover4
+  #print axioms JSP818.Enumeration.cover5
+  #print axioms JSP818.Enumeration.cover6
+  #print axioms JSP818.Enumeration.cover7
+  #print axioms JSP818.Enumeration.cover8
+  #print axioms JSP818.Enumeration.cover9
+
+A separate run of the official LeanChecker replayFromImports function
+rechecked FiniteEnumeration, FiniteCases.Intervals, FiniteCases.K5,
+FiniteCases, and PrimePrimitiveRoot from compiled artifacts (exit code 0).
+
+Coverage and numerical cross-check
+
+Each terminal candidate is an integer position in an interval of possible
+cofactors m, with p = d*m + 1. Positions in different branches are counted
+separately. The final column counts residual primes with a root certificate.
+The first numerical column is the uniform upper bound on m for that k.
+
+ k    maximum m    terminal positions    residual prime moduli
+ 2       11,704                11,702                      385
+ 3       24,883               104,714                    5,777
+ 4       25,229               304,992                   22,417
+ 5       16,916               425,939                   37,637
+ 6        6,949               313,341                   30,429
+ 7        2,468               127,487                   12,265
+ 8          634                22,437                    1,999
+ 9          145                 1,245                      102
+ total                      1,311,857                  111,011
+
+The independent Python wheel and prime-power audits agreed on the full set
+of 111,011 residual primes. The largest residual modulus was 1,402,927,891.
+The largest least prime witness among the residual moduli was 193. Reproduce
+the comparison with `python check_wheel.py`. The Lean build synthesizes and
+checks its own row certificates and proves that the intervals cover every
+possible residual modulus. Python and the numerical counts are auxiliary.
+
+Reproduce with the selected source
+
+  lake exe cache get
+  lake build
+  lake env lean FiniteCases.lean
+  lake env lean PrimePrimitiveRoot.lean
+
+The two Lean files print the dependencies of the finite and main theorems.
+The upstream statement about Dirichlet L-functions is the explicit analytic
+premise of the main theorem.

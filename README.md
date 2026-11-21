@@ -34,7 +34,9 @@ lake env lean FiniteCases.lean
 lake env lean PrimePrimitiveRoot.lean
 ```
 
-The eight `FiniteCases.K2` through `FiniteCases.K9` modules can also be built individually, for example with `lake build FiniteCases.K5`. The largest case, `K5`, has five independently cached intervals. A low-memory build can run each target in `FiniteCases.Five` individually and then build the eight factor-count modules one at a time. [Five-factor intervals](FiniteCases/Five) All targets share the same certificate generator and coverage proof. The source prints the transitive axiom dependencies of the finite and final theorems. The checked declarations use `propext`, `Classical.choice` and `Quot.sound`. Explicit hypotheses remain visible in the types even when only these standard axioms are printed.
+The modules `FiniteCases.K2` through `FiniteCases.K9` can be built individually, for example with `lake build FiniteCases.K5`. The largest case, `K5`, has five independently cached intervals. A low-memory build can run each of those five targets individually and then build the eight factor-count modules one at a time. [Five-factor intervals](FiniteCases/Five)
+
+All targets share the same certificate generator and coverage proof. The verification record gives the types of the finite and final theorems, the counts for all eight cases, and the transitive axiom audit. Both theorems use `propext`, `Classical.choice` and `Quot.sound`. The final theorem's type records its explicit Dirichlet GRH hypothesis. [Verification record](verification/grh-exhaustion.txt)
 
 ## Reproducing the larger finite checks
 
