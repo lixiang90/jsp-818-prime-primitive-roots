@@ -16,8 +16,8 @@ srcDir = "vendor"
 
 [[lean_lib]]
 name = "PrimePrimitiveRoot"
-roots = ["PrimePrimitiveRoot", "ElementaryFamilies", "DirichletGRH", "CharacterSieve",
+roots = ["PrimePrimitiveRoot", "PublishedBound", "ElementaryFamilies", "DirichletGRH", "CharacterSieve",
   "SmoothedSums", "PrincipalMass", "ZeroKernel", "MellinKernel", "SizeBound",
   "BachZeros", "EulerBound", "GammaFactors", "ZeroMassBound", "GridFormula",
   "MomentUniqueness", "KernelBounds", "FiniteWitness", "FiniteReduction", "UnitMoments", "SpecialMoments",
-  "ArithmeticMoments", "ZeroSide", "PoleMoments", "TrivialTail", "FirstPole", "ExplicitTwist"]
+  "ArithmeticMoments", "ZeroSide", "PoleMoments", "TrivialTail", "FirstPole", "FiniteCaps", "ExplicitTwist"]

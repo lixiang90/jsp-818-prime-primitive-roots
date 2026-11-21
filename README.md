@@ -17,12 +17,13 @@ Assuming Dirichlet GRH, every odd prime $p$ has a prime $q<p$ of multiplicative 
 | [`logDeriv_grid_poles`](GridFormula.lean) | At $s=3/2+2m$, the change of logarithmic derivative of the Dirichlet $L$-function equals the sum of the changes from all its trivial and nontrivial zeros. |
 | [`rootCertificate_sound`](FiniteWitness.lean) | A prime witness and a factorization of $p-1$ can be checked by binary modular exponentiation for $p\le 2^{36}$. The same kernel proof verifies the example $p=13{,}123{,}111$, $q=19$. |
 | [`odd_primes_of_twist_envelope`](FiniteReduction.lean) | The explicit smoothed-sum bound and a finite input with an integer-only test imply Erdős 985. The basic sieve program checks the 111,011 prime moduli selected by this test. |
+| [`residual_wheel` and `wheelFiniteInput_iff`](FiniteCaps.lean) | Every basic residual has $p-1=dt$, where $d$ is the product of its distinct prime factors up to 43 and $t\le592{,}078$. Lean proves that testing the resulting progressions suffices. |
 
 There is also a shorter deduction from McGown, Treviño and Trudgian's stronger bound $q<\sqrt p-2$. It needs just 405 odd primes checked in the kernel. Its Lean theorem `erdos_985` takes the published large-prime implication as an explicit argument. Both routes accept the Dirichlet GRH statement used by Alpöge as a premise. [Paper, Theorem 1](https://campus.lakeforest.edu/trevino/GrosswaldGRH.pdf#page=2) · [Upstream GRH statement](https://github.com/CocoSgt/riemann-hypothesis-lean/blob/7cbf7a0c32fca1badf05931879a37c3f8a2b03b4/src/Statements.lean#L5-L7)
 
 ## Reproduction
 
-From this repository with Elan installed, run the following commands. The toolchain file selects Lean 4.34.1 and the Lake manifest pins mathlib and its transitive dependencies. The Hadamard support modules are included with their original notices. [Source revisions](vendor/SOURCES.md)
+Import `PrimePrimitiveRoot` for the direct theorems. With Elan installed, the following commands build the project and reproduce the small certificate. The toolchain file selects Lean 4.34.1 and the Lake manifest pins mathlib and its transitive dependencies. The Hadamard support modules are included with their original notices. [Source revisions](vendor/SOURCES.md)
 
 ```sh
 lake exe cache get
@@ -46,9 +47,12 @@ python check_sieve_exceptions.py --all-through 16777216
 python check_sieve_exceptions.py
 python check_sieve_exceptions.py --basic
 python check_sieve_exceptions.py --basic --lean-replay
+python check_wheel.py
 lake env lean FiniteWitness.lean
 ```
 
 The second and third commands enumerate the residual moduli for two character-sieve inequalities. The refined inequality leaves 23,667 prime moduli above 2791 (about 2 seconds locally). The basic one leaves 111,011 (about 4 seconds). The direct Lean theorem uses the basic inequality. Its input `BasicFiniteInput` asks whether a prime up to 193 passes the full order test at each residual modulus.
 
 The optional `--lean-replay` command also invokes the ordinary Lean kernel on each enumerated modulus. It supplies a factorization and a single witness, processes independent declarations in temporary batches of 2,048, and discards each batch after checking. The individual declarations prove the bounded Boolean result for the generated integers. The current all-moduli theorem takes the universally quantified finite input, which also requires coverage of the residual set. [Derivation and coverage](PROOF.md#reducing-the-larger-finite-check)
+
+`check_wheel.py` audits coverage independently by arithmetic progressions. The two algorithms produce exactly the same 111,011 integers. The wheel's multiplier tables occupy 1,776,237 bytes. [Proof of the wheel bounds](PROOF.md#independent-coverage-by-arithmetic-progressions)

@@ -1,4 +1,4 @@
-import PrimePrimitiveRoot
+import PublishedBound
 import FiniteWitness
 import SizeBound
 import EulerBound

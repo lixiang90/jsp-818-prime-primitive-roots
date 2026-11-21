@@ -1,7 +1,7 @@
 import TrivialTail
 import FirstPole
 import MomentUniqueness
-import FiniteReduction
+import FiniteCaps
 
 noncomputable section
 
@@ -136,8 +136,13 @@ theorem erdos_985_of_grh_and_finite (grh : DirichletGRH) (finite : BasicFiniteIn
     let : Fact p.Prime := ⟨prime⟩
     exact grh_twist_envelope grh lower nontrivial) p hp hne
 
+theorem erdos_985_of_grh_and_wheel (grh : DirichletGRH) (finite : WheelFiniteInput)
+    (p : ℕ) (hp : p.Prime) (hne : p ≠ 2) : HasSmallPrimeRoot p :=
+  erdos_985_of_grh_and_finite grh (wheelFiniteInput_iff.mp finite) p hp hne
+
 #print axioms normalized_explicit_formula
 #print axioms grh_twist_envelope
 #print axioms erdos_985_of_grh_and_finite
+#print axioms erdos_985_of_grh_and_wheel
 
 end JSP818
