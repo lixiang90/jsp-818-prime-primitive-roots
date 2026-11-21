@@ -1,5 +1,5 @@
-import PrimePrimitiveRoot
-import Mathlib.Tactic
+import Mathlib.FieldTheory.Finite.Basic
+import Mathlib.Tactic.NormNum.Prime
 
 namespace JSP818
 

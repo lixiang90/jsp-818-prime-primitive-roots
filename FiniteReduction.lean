@@ -1,4 +1,5 @@
 import PrimePrimitiveRoot
+import FiniteWitness
 import SizeBound
 import EulerBound
 
@@ -13,11 +14,17 @@ upper bound for its lower order terms. -/
 def twistEnvelope (p : ℕ) : ℝ :=
   (2 / 3 * log p + 8) * √(p : ℝ) + 3 * log p + 37
 
-/-- An exact finite input; all the comparisons in it are on natural numbers. -/
+/-- A decidable statement at one modulus using the canonical factorization.
+The basic sieve run attains 193 as the largest least witness. -/
+def finiteModulusCheck (p : ℕ) : Bool :=
+  (List.range 194).any (fun q => rootCertificate p q (p - 1).primeFactorsList)
+
+/-- An exact finite input; it contains only natural-number arithmetic and
+the explicitly bounded witness search above. -/
 def BasicFiniteInput : Prop :=
   ∀ p : ℕ, p.Prime → 2791 < p → p < 2 ^ 36 →
     25 * p ≤ ((150 + 7 * (p.log2 + 1)) * (2 ^ (p - 1).primeFactors.card - 1)) ^ 2 →
-    HasSmallPrimeRoot p
+    finiteModulusCheck p = true
 
 private theorem fourth_root_id {p : ℕ} (hp : 0 < p) :
     ((p : ℝ) ^ (1 / 4 : ℝ)) ^ 4 = p ∧ ((p : ℝ) ^ (1 / 4 : ℝ)) ^ 2 = √(p : ℝ) := by
@@ -98,7 +105,8 @@ theorem odd_primes_of_twist_envelope (finite : BasicFiniteInput)
   let b := p.log2 + 1
   let c := 2 ^ (p - 1).primeFactors.card - 1
   by_cases residual : 25 * p ≤ ((150 + 7 * b) * c) ^ 2
-  · exact finite p hp hl (by omega) residual
+  · obtain ⟨q, _, ok⟩ := List.any_eq_true.mp (finite p hp hl (by omega) residual)
+    exact ⟨q, rootCertificate_sound hp (by omega) ok⟩
   have cs : (c : ℝ) = (2 : ℝ) ^ (p - 1).primeFactors.card - 1 := by
     dsimp [c]
     rw [Nat.cast_sub (Nat.one_le_two_pow), Nat.cast_pow]; norm_num

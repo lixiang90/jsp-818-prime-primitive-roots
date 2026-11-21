@@ -13,6 +13,7 @@ from math import isqrt, prod
 
 FIRST_PRIMES = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31)
 LOWER, UPPER = 2791, 2**36
+BASIC_WITNESS_LIMIT = 193
 
 
 def sieve(limit):
@@ -106,6 +107,7 @@ def check(refined):
     # The largest last factor is bounded by dividing out the other k-1 primes.
     table_limit = max(max(isqrt(b), b // prod(FIRST_PRIMES[:k-1])) for k, b in rows)
     primes = sieve(table_limit)
+    candidates = [q for q in primes if q <= BASIC_WITNESS_LIMIT]
     print("prime table limit", table_limit)
     print("omega | modulus cap | moduli checked | largest checked p | largest least q")
     total = 0
@@ -117,7 +119,7 @@ def check(refined):
                 continue
             if p > dyadic_limit(p.bit_length(), coefficient(factors, refined)):
                 continue
-            q = least_witness(p, factors, primes)
+            q = least_witness(p, factors, candidates)
             count += 1
             largest_p, largest_q = max(largest_p, p), max(largest_q, q)
         total += count
